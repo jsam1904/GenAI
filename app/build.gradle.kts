@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.genai"
-        minSdk = 34
+        minSdk = 29
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -68,6 +68,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    // Iconos extendidos (para íconos de deportes)
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
+
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
