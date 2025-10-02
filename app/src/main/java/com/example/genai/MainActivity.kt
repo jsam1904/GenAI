@@ -3,45 +3,26 @@ package com.example.genai
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.genai.ui.TrainingScreen
 import com.example.genai.ui.theme.GenAITheme
+import com.example.genai.viewmodel.TrainingViewModel
+import com.example.genai.domain.GetSportsUseCase
+import com.example.genai.domain.GeneratePlanUseCase
+import com.example.genai.data.OpenAiRepository
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        val viewModel = TrainingViewModel(
+            getSports = GetSportsUseCase(),
+            generatePlan = GeneratePlanUseCase(OpenAiRepository())
+        )
+
         setContent {
             GenAITheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                TrainingScreen(viewModel = viewModel)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    GenAITheme {
-        Greeting("Android")
     }
 }
