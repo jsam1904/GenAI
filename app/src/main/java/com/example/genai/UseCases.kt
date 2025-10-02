@@ -1,6 +1,6 @@
 package com.example.genai
 
-import com.example.genai.data.OpenAiRepository
+import com.example.genai.OpenAiRepository
 
 class GetSportsUseCase {
     operator fun invoke(): List<Sport> = listOf(
