@@ -68,9 +68,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+
     // Iconos extendidos (para íconos de deportes)
     implementation("androidx.compose.material:material-icons-extended:1.7.5")
-
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
@@ -86,8 +86,10 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    // Moshi (sin kapt)
     implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
 
-    // Security (opcional para almacenar key si no quieres usar BuildConfig)
+    // Security (opcional)
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }

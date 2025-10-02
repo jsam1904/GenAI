@@ -59,7 +59,8 @@ class TrainingViewModel(
                 val plan = generatePlan(goal)
                 _state.update { it.copy(plan = plan, isLoading = false) }
             } catch (e: Exception) {
-                _state.update { it.copy(isLoading = false, error = e.message) }
+                android.util.Log.e("AI_ERROR", "Error generando plan", e)
+                _state.update { it.copy(isLoading = false, error = e.localizedMessage ?: "Error desconocido") }
             }
         }
     }

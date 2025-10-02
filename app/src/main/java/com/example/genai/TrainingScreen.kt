@@ -4,16 +4,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.SportsSoccer
-import androidx.compose.material.icons.filled.SportsBasketball
-import androidx.compose.material.icons.filled.SportsTennis
-import androidx.compose.material.icons.filled.Pool
-import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.automirrored.filled.DirectionsRun
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.Pool
+import androidx.compose.material.icons.filled.SportsBasketball
+import androidx.compose.material.icons.filled.SportsSoccer
+import androidx.compose.material.icons.filled.SportsTennis
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,8 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.lazy.items
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,10 +32,10 @@ fun TrainingScreen(viewModel: TrainingViewModel) {
     val st by viewModel.state.collectAsState()
     val scrollState = rememberScrollState()
 
-    // ✅ Estados locales corregidos
+    // ✅ Estados locales
     var selectedDays by remember { mutableStateOf(setOf<String>()) }
     var obj by remember { mutableStateOf(st.objective) }
-    var level by remember { mutableFloatStateOf(0f) } // recomendado
+    var level by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(Unit) { viewModel.onIntent(TrainingIntent.LoadSports) }
 
@@ -95,7 +95,6 @@ fun TrainingScreen(viewModel: TrainingViewModel) {
                     "Natación" to Icons.Filled.Pool
                 )
 
-                // ✅ ahora items(sports) y desestructuración
                 items(sports) { (name, icon) ->
                     val isSelected = st.selected?.name == name
                     Card(
@@ -152,7 +151,7 @@ fun TrainingScreen(viewModel: TrainingViewModel) {
                     .padding(16.dp)
             )
 
-            // 📅 Días de la semana (dos filas)
+            // 📅 Días (dos filas)
             Text(
                 "Selecciona días disponibles",
                 fontSize = 20.sp,
@@ -197,7 +196,7 @@ fun TrainingScreen(viewModel: TrainingViewModel) {
                 }
             }
 
-            // 📊 Nivel de entrenamiento con Slider
+            // 📊 Nivel
             Spacer(Modifier.height(16.dp))
             Text(
                 "Nivel de entrenamiento",
@@ -264,7 +263,7 @@ fun TrainingScreen(viewModel: TrainingViewModel) {
                 )
             }
 
-            // 📋 Plan generado
+            // 📋 Plan generado (con scroll y selección)
             st.plan?.let {
                 Spacer(Modifier.height(20.dp))
                 Card(
@@ -273,12 +272,31 @@ fun TrainingScreen(viewModel: TrainingViewModel) {
                         .padding(16.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F4F6))
                 ) {
-                    Column(Modifier.padding(16.dp)) {
+                    Column(
+                        Modifier
+                            .padding(16.dp)
+                            .verticalScroll(rememberScrollState())
+                    ) {
                         Text("Plan generado", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                         Spacer(Modifier.height(8.dp))
-                        Text(it.planMarkdown)
+                        SelectionContainer {
+                            Text(
+                                text = it.planMarkdown,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
                     }
                 }
+            }
+
+            // ❗Mostrar errores si ocurren
+            st.error?.let {
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    text = "Error: $it",
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
             }
         }
     }
