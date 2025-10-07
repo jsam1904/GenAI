@@ -14,16 +14,13 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // API Key de OpenAI desde local.properties
-        buildConfigField(
-            "String",
-            "OPENAI_API_KEY",
-            "\"${project.findProperty("OPENAI_API_KEY") ?: ""}\""
-        )
+        val openAiKey = project.findProperty("OPENAI_API_KEY") as String? ?: ""
+        buildConfigField("String", "OPENAI_API_KEY", "\"$openAiKey\"")
     }
+
+
 
     buildTypes {
         release {
@@ -43,8 +40,9 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig = true
+        buildConfig = true   // 👈 IMPORTANTE
     }
+
 }
 
 dependencies {

@@ -1,6 +1,5 @@
 package com.example.genai
 
-import com.example.genai.BuildConfig
 import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -23,10 +22,8 @@ data class ChatReq(
 )
 
 data class Message(val role: String, val content: String)
-
 data class ChatRes(val choices: List<Choice>)
-data class Choice(val message: Message)   // 👈 versión simple (funcionaba antes)
-
+data class Choice(val message: Message)
 
 // API
 interface OpenAiService {
@@ -39,10 +36,14 @@ class OpenAiRepository {
     private val api: OpenAiService
 
     init {
+        val key = BuildConfig.OPENAI_API_KEY
+        android.util.Log.d("API_KEY_DEBUG", "Key cargada: ${key.take(10)}...")
+
         val auth = Interceptor { chain ->
             chain.proceed(
                 chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${BuildConfig.OPENAI_API_KEY}")
+                    .addHeader("Authorization", "Bearer $key")
+                    .addHeader("Content-Type", "application/json")
                     .build()
             )
         }
@@ -74,15 +75,8 @@ class OpenAiRepository {
             Minutes: ${goal.minutesPerSession}
         """.trimIndent())
 
-        try {
-            val res = api.chat(ChatReq("gpt-4o-mini", listOf(sys, usr)))
-            android.util.Log.d("AI_DEBUG", "Respuesta completa: $res")
-
-            val content = res.choices.firstOrNull()?.message?.content ?: "⚠️ No se recibió plan"
-            TrainingPlan(goal.sportId, content)
-        } catch (e: Exception) {
-            android.util.Log.e("AI_ERROR", "Falló request", e)
-            throw e
-        }
+        val res = api.chat(ChatReq("gpt-4o-mini", listOf(sys, usr)))
+        val content = res.choices.firstOrNull()?.message?.content ?: "⚠️ No se recibió plan"
+        TrainingPlan(goal.sportId, content)
     }
 }
